@@ -2,5 +2,7 @@
 
 ToDo App.
 
-## Bloc Pattern 
+Bloc Pattern 
+
+This project is still under development
 

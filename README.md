@@ -1,6 +1,6 @@
 # ToDo App
 
-Note: This project is still under development.
+Note: This project is still under development. If you detect any errors or have any suggestions, you can contact me.
 
 # Packages
 - Bloc

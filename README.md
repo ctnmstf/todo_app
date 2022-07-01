@@ -1,8 +1,11 @@
-# todo_app
+# ToDo App
 
-ToDo App.
+Note: This project is still under development.
 
-Bloc Pattern 
-
-This project is still under development
+# Packages
+- Bloc
+- SQLite 
+- Equatable
+- Formz
+- Flutter Localizations
 

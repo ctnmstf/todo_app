@@ -1,25 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:todo_app/bloc/addTask/add_task_bloc.dart';
+import 'package:todo_app/bloc/editTask/edit_bloc.dart';
 import 'package:todo_app/repo/todo_repo.dart';
 import 'package:todo_app/widget/custom_snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class AddTask extends StatelessWidget {
-  const AddTask({Key? key}) : super(key: key);
+class EditTask extends StatelessWidget {
+  const EditTask(
+      {Key? key,
+      required this.titleDef,
+      required this.descriptionDef,
+      required this.id})
+      : super(key: key);
+
+  final String titleDef;
+  final String descriptionDef;
+  final int id;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.addTitle),
+        title: Text(AppLocalizations.of(context)!.editTitle),
         centerTitle: true,
       ),
       body: BlocProvider(
         create: (context) =>
-            AddTaskBloc(toDoRepo: RepositoryProvider.of<ToDoRepo>(context)),
-        child: BlocListener<AddTaskBloc, AddTaskState>(
+            EditBloc(toDoRepo: RepositoryProvider.of<ToDoRepo>(context)),
+        child: BlocListener<EditBloc, EditState>(
           listener: (context, state) {
             if (state.status.isSubmissionFailure) {
               CustomSnackBar.buildSnackBar(
@@ -40,15 +49,17 @@ class AddTask extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _TitleInput(),
+                      _TitleInput(titleDef),
                       const SizedBox(
                         height: 15.0,
                       ),
-                      _DescriptionInput(),
+                      _DescriptionInput(descriptionDef),
                       const SizedBox(
                         height: 15.0,
                       ),
-                      _SubmitButton(),
+                      _UpdateButton(id),
+                      _DoneButton(id),
+                      _DeleteButton(id),
                     ],
                   ))
                 ],
@@ -62,13 +73,17 @@ class AddTask extends StatelessWidget {
 }
 
 class _TitleInput extends StatelessWidget {
+  const _TitleInput(this.titleDef);
+
+  final String titleDef;
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddTaskBloc, AddTaskState>(
+    return BlocBuilder<EditBloc, EditState>(
       buildWhen: (previous, current) => previous.title != current.title,
       builder: (context, state) {
         return TextFormField(
           key: const Key('reportTypeFormField'),
+          initialValue: titleDef,
           decoration: InputDecoration(
             labelText: AppLocalizations.of(context)!.title,
             border:
@@ -78,7 +93,7 @@ class _TitleInput extends StatelessWidget {
                 : null,
           ),
           onChanged: (String? title) {
-            context.read<AddTaskBloc>().add(TitleChanged(title!));
+            context.read<EditBloc>().add(TitleUpdate(title!));
           },
         );
       },
@@ -87,15 +102,19 @@ class _TitleInput extends StatelessWidget {
 }
 
 class _DescriptionInput extends StatelessWidget {
+  const _DescriptionInput(this.descriptionDef);
+
+  final String descriptionDef;
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddTaskBloc, AddTaskState>(
+    return BlocBuilder<EditBloc, EditState>(
       buildWhen: (previous, current) =>
           previous.description != current.description,
       builder: (context, state) {
         return TextFormField(
           key: const Key('reportTypeFormField'),
           maxLines: 8,
+          initialValue: descriptionDef,
           decoration: InputDecoration(
             labelText: AppLocalizations.of(context)!.desc,
             border:
@@ -106,7 +125,7 @@ class _DescriptionInput extends StatelessWidget {
                 : null,
           ),
           onChanged: (String? desc) {
-            context.read<AddTaskBloc>().add(DescriptionChanged(desc!));
+            context.read<EditBloc>().add(DescriptionUpdate(desc!));
           },
         );
       },
@@ -114,10 +133,13 @@ class _DescriptionInput extends StatelessWidget {
   }
 }
 
-class _SubmitButton extends StatelessWidget {
+class _UpdateButton extends StatelessWidget {
+  const _UpdateButton(this.id);
+
+  final int id;
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddTaskBloc, AddTaskState>(
+    return BlocBuilder<EditBloc, EditState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
         return state.status.isSubmissionInProgress
@@ -127,14 +149,74 @@ class _SubmitButton extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(40),
                 ),
-                onPressed: state.status.isValidated
-                    ? () {
-                        context.read<AddTaskBloc>().add(const FormSubmitted());
-                        Navigator.pop(context);
-                      }
-                    : null,
+                onPressed: () {
+                  context.read<EditBloc>().add(Update(id));
+                  Navigator.pop(context);
+                },
                 child: Text(
-                  AppLocalizations.of(context)!.submit,
+                  AppLocalizations.of(context)!.update,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              );
+      },
+    );
+  }
+}
+
+class _DoneButton extends StatelessWidget {
+  const _DoneButton(this.id);
+
+  final int id;
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<EditBloc, EditState>(
+      buildWhen: (previous, current) => previous.status != current.status,
+      builder: (context, state) {
+        return state.status.isSubmissionInProgress
+            ? const Center(child: CircularProgressIndicator())
+            : ElevatedButton(
+                key: const Key('reportTypeSubmitButton'),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green,
+                  minimumSize: const Size.fromHeight(40),
+                ),
+                onPressed: () {
+                  context.read<EditBloc>().add(Done(id));
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  AppLocalizations.of(context)!.done,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              );
+      },
+    );
+  }
+}
+
+class _DeleteButton extends StatelessWidget {
+  const _DeleteButton(this.id);
+
+  final int id;
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<EditBloc, EditState>(
+      buildWhen: (previous, current) => previous.status != current.status,
+      builder: (context, state) {
+        return state.status.isSubmissionInProgress
+            ? const Center(child: CircularProgressIndicator())
+            : ElevatedButton(
+                key: const Key('reportTypeSubmitButton'),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.red,
+                  minimumSize: const Size.fromHeight(40),
+                ),
+                onPressed: () {
+                  context.read<EditBloc>().add(Delete(id));
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  AppLocalizations.of(context)!.delete,
                   style: const TextStyle(color: Colors.white),
                 ),
               );

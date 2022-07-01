@@ -28,5 +28,3 @@ class DescriptionChanged extends AddTaskEvent {
 class FormSubmitted extends AddTaskEvent {
   const FormSubmitted();
 }
-
-

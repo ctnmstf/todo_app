@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
@@ -51,7 +49,7 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
     if (state.status.isValidated) {
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
       try {
-        final response = await _toDoRepo.createToDo(ToDo(
+        await _toDoRepo.createToDo(ToDo(
             title: state.title.value,
             description: state.description.value,
             status: 0));

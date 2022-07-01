@@ -1,0 +1,15 @@
+{
+    "appName": "ToDo App",
+    "empty": "This place is empty. You can fill it with the Add button.",
+    "addTitle": "Add Task",
+    "title": "Title",
+    "desc" : "Description",
+    "submit" : "Submit",
+    "update": "Update",
+    "done": "Done",
+    "delete": "Delete",
+    "editTitle": "Edit Task",
+    "success": "Success!",
+    "fail": "Fail!",
+    "required" : "Required"
+}

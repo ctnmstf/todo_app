@@ -1,0 +1,15 @@
+{
+    "appName": "ToDo App",
+    "empty": "Burası boş gözüküyor. Doldurmak için Ekle düğmesini kullanabilirsiniz.",
+    "addTitle": "Görev Ekle",
+    "title": "Başlık",
+    "desc" : "Açıklama",
+    "submit" : "Gönder",
+    "update": "Güncelle",
+    "done": "Tamamla",
+    "delete": "Sil",
+    "editTitle": "Görevi Düzenle",
+    "success": "Başarılı!",
+    "fail": "Başarısız!",
+    "required": "Zorunlu"
+}

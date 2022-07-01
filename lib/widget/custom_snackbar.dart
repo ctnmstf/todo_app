@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
-class CustomSnackBar{
+class CustomSnackBar {
   CustomSnackBar._();
-  static buildSnackBar(BuildContext context, String message, Color color){
+  static buildSnackBar(BuildContext context, String message, Color color) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message), backgroundColor: color, behavior: SnackBarBehavior.floating,));
+      ..showSnackBar(SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+      ));
   }
 }

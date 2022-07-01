@@ -32,7 +32,9 @@ class ToDoRepo {
   Future<List<ToDo>> getAllToDo() async {
     final db = await toDoRepo.db;
     var result = await db.query('Todo');
-    List<ToDo> toDo = result.isNotEmpty ? result.map((item) => ToDo.fromJSON(item)).toList() : [];
+    List<ToDo> toDo = result.isNotEmpty
+        ? result.map((item) => ToDo.fromJSON(item)).toList()
+        : [];
     return toDo;
   }
 
@@ -44,7 +46,8 @@ class ToDoRepo {
 
   Future<int> updateToDo(ToDo toDo) async {
     final db = await toDoRepo.db;
-    var result = await db.update('Todo', toDo.toJSON(), where: 'id = ?', whereArgs: [toDo.id]);
+    var result = await db
+        .update('Todo', toDo.toJSON(), where: 'id = ?', whereArgs: [toDo.id]);
     return result;
   }
 
